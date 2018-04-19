@@ -1,0 +1,19 @@
+Design overview:
+Linkedlist was created which contains information about the block of memory that was received by the Kernel.
+The information includes all the nodes that are free as well as nodes that are occupied. A flag was set to implement
+this information.At first the program asks for a chunk of memory from the kernel which would be a multiple of the page
+size. The amount of memory the program asks for depends on  the malloc calls.
+Buddy memory allocation is used to allocate the memory for each calls. The returned address is maintained at an 8 byte
+boundary.
+Design Decisions:
+A  List was created that contains the information about the memory blocks because it would make it easier to keep track
+of free memory blocks and allocated blocks even after dividing the blocks using buddy allocation.The list also contains an
+extra bit of information which points to the starting memory address of each memory block including whether it is free or not.
+if a certain size of memory is asked, the list is traversed to find the a memory unit that can fit the requested size. if the
+size is too big then the block is divided again and again by half unless and until it can accommodate the requested size which leads
+to less memory fragmentation.
+sbrk is used to get a large memory chunk from the kernel. if the memory asked for is bigger than the page size, the smallest possible
+amount of memory which must be a multiple of page size is calculated and is requested by the kernel.The program does not consider two separate
+memory calls to the kernel as buddies and thus refuse to merge them even they are adjacent and are of same size. Hence, it might lead to
+higher number of memory fragmentation than usual.Since the list also keeps track of all the allocated addresses it might lead to slower
+performance.
